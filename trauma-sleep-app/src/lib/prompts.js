@@ -40,8 +40,6 @@ function applyParams(systemBase, params) {
 export const HEADERS = [
   {
     id: 'ancla_nocturna',
-    label: 'Ancla nocturna',
-    description: 'Para acostarse con el sistema nervioso activado',
     icon: '🌙',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: ancla de seguridad nocturna para personas con hiperactivación del sistema nervioso por trauma. El objetivo es traer a la persona al presente, al cuerpo, a la cama. No resolver nada. Solo bajar un cambio.`,
@@ -52,8 +50,6 @@ export const HEADERS = [
   },
   {
     id: 'anti_gaslighting',
-    label: 'Anti-gaslighting',
-    description: 'Reconstrucción de identidad y valor propio',
     icon: '🛡️',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: contrarrestar el daño del gaslighting y la manipulación psicológica sostenida. Devolver a la persona su criterio, su valor y su identidad que fue atacada sistemáticamente. Hablar desde la realidad del daño, no desde la negación.`,
@@ -64,8 +60,6 @@ export const HEADERS = [
   },
   {
     id: 'arrancar_funcionar',
-    label: 'Arrancar a funcionar',
-    description: 'Para estudiar o trabajar desde el quiebre',
     icon: '⚡',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: activación cognitiva suave para personas en recuperación de trauma que necesitan estudiar, trabajar o hacer una tarea concreta pero sienten que no pueden. Quitar la presión de rendimiento y generar tracción mínima.`,
@@ -76,8 +70,6 @@ export const HEADERS = [
   },
   {
     id: 'terror_nocturno',
-    label: 'Terror nocturno',
-    description: 'Para despertarse con imágenes o pánico',
     icon: '⚠️',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: intervención de emergencia para flashbacks, pesadillas o terror nocturno. Grounding inmediato, técnicas de orientación al presente. Tono firme pero cálido. Frases muy cortas.`,
@@ -88,8 +80,6 @@ export const HEADERS = [
   },
   {
     id: 'viaje_mental',
-    label: 'Viaje mental',
-    description: 'Inducción de sueño por narrativa inmersiva',
     icon: '🌸',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: inducción de sueño a través de viaje mental narrativo. Crear un espacio imaginario seguro, bello, con historia y textura. El destino puede ser cualquier lugar evocador. El ritmo es hipnótico.`,
@@ -100,8 +90,6 @@ export const HEADERS = [
   },
   {
     id: 'calmar_depresion',
-    label: 'Calmar la depresión',
-    description: 'Contención emocional profunda',
     icon: '💙',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: acompañamiento en estados depresivos profundos. No ofrecer soluciones. No decir "va a pasar". Validar el peso, estar presente en él, y sostener sin exigir nada.`,
@@ -112,8 +100,6 @@ export const HEADERS = [
   },
   {
     id: 'induccion_sueno',
-    label: 'Inducción de sueño',
-    description: 'Relajación progresiva y respiración',
     icon: '🌊',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: relajación progresiva guiada para conciliar el sueño. Técnica de escaneo corporal + respiración. Sin narrativa, solo guía somática. Ritmo muy pausado.`,
@@ -124,8 +110,6 @@ export const HEADERS = [
   },
   {
     id: 'reconstruccion_autoestima',
-    label: 'Reconstrucción de autoestima',
-    description: 'Afirmaciones desde la herida real',
     icon: '🔥',
     systemPrompt: (params) => applyParams(
       `${BASE_SYSTEM}\n\nEspecialidad: reconstrucción de autoestima después de daño sistemático. No afirmaciones positivas vacías. Partir de la herida real y construir desde ahí certezas que sí aguantan.`,

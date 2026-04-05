@@ -9,8 +9,6 @@ describe('HEADERS structure', () => {
   it('each header has required fields', () => {
     for (const h of HEADERS) {
       expect(h).toHaveProperty('id');
-      expect(h).toHaveProperty('label');
-      expect(h).toHaveProperty('description');
       expect(h).toHaveProperty('icon');
       expect(typeof h.systemPrompt).toBe('function');
       expect(typeof h.userPrompt).toBe('function');

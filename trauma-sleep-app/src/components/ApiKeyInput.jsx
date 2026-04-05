@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { validateApiKey } from "../lib/openai";
 import { saveApiKey, clearApiKey } from "../lib/storage";
+import { t } from "../lib/i18n";
 
-export default function ApiKeyInput({ apiKey, onKeySet }) {
+export default function ApiKeyInput({ apiKey, onKeySet, lang = 'en' }) {
   const [input, setInput] = useState(apiKey || "");
   const [status, setStatus] = useState(apiKey ? "saved" : "idle");
   const [error, setError] = useState("");
+
+  const T = (key) => t(lang, key);
 
   async function handleSave() {
     if (!input.trim()) return;
@@ -18,7 +21,7 @@ export default function ApiKeyInput({ apiKey, onKeySet }) {
       onKeySet(input.trim());
     } else {
       setStatus("error");
-      setError("API key inválida o sin acceso. Revisá que sea correcta.");
+      setError(T("apiKeyError"));
     }
   }
 
@@ -39,7 +42,7 @@ export default function ApiKeyInput({ apiKey, onKeySet }) {
           rel="noopener noreferrer"
           className="text-indigo-400 hover:text-indigo-300"
         >
-          Get OpenAI API Key
+          {T("apiKeyLabel")}
         </a>
       </label>
       <div className="flex gap-2">
@@ -59,7 +62,7 @@ export default function ApiKeyInput({ apiKey, onKeySet }) {
             onClick={handleClear}
             className="px-4 py-3 rounded-xl bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors text-sm font-medium"
           >
-            Cambiar
+            {T("apiKeyChange")}
           </button>
         ) : (
           <button
@@ -67,21 +70,17 @@ export default function ApiKeyInput({ apiKey, onKeySet }) {
             disabled={status === "validating" || !input.trim()}
             className="px-4 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium min-w-[90px]"
           >
-            {status === "validating" ? "Verificando..." : "Guardar"}
+            {status === "validating" ? T("apiKeyVerifying") : T("apiKeySave")}
           </button>
         )}
       </div>
 
       {status === "saved" && (
-        <p className="mt-2 text-xs text-emerald-400">
-          Clave activa (solo esta sesión, no sale del navegador).
-        </p>
+        <p className="mt-2 text-xs text-emerald-400">{T("apiKeyActive")}</p>
       )}
       {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
       {status === "idle" && !error && (
-        <p className="mt-2 text-xs text-slate-600">
-          Va directo a OpenAI desde tu navegador.
-        </p>
+        <p className="mt-2 text-xs text-slate-600">{T("apiKeyHint")}</p>
       )}
     </div>
   );

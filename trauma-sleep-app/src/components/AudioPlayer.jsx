@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { t } from '../lib/i18n';
 
 function formatTime(s) {
   if (!isFinite(s)) return '0:00';
@@ -7,7 +8,7 @@ function formatTime(s) {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 }
 
-export default function AudioPlayer({ url, title, text, onDownload, defaultShowText = false }) {
+export default function AudioPlayer({ url, title, text, onDownload, defaultShowText = false, lang = 'en' }) {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -47,13 +48,13 @@ export default function AudioPlayer({ url, title, text, onDownload, defaultShowT
             onClick={() => setShowText(!showText)}
             className="text-xs text-slate-500 hover:text-slate-300 transition-colors px-2 py-1 rounded-lg hover:bg-slate-700"
           >
-            {showText ? 'Ocultar texto' : 'Ver texto'}
+            {showText ? t(lang, 'hideTranscript') : t(lang, 'showTranscript')}
           </button>
           <button
             onClick={onDownload}
             className="text-xs text-slate-500 hover:text-indigo-400 transition-colors px-2 py-1 rounded-lg hover:bg-slate-700"
           >
-            Descargar
+            {t(lang, 'download')}
           </button>
         </div>
       </div>
@@ -68,7 +69,7 @@ export default function AudioPlayer({ url, title, text, onDownload, defaultShowT
       />
       {loadError && (
         <p className="text-xs text-amber-500 bg-amber-950/30 border border-amber-800/40 rounded-xl px-3 py-2">
-          Audio no disponible en esta sesion. Descargalo antes de cerrar el navegador para conservarlo.
+          {t(lang, 'audioUnavailable')}
         </p>
       )}
 

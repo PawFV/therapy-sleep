@@ -5,8 +5,8 @@ from pycaw.pycaw import AudioUtilities
 device = AudioUtilities.GetSpeakers()
 volume = device.EndpointVolume
 
-print("Iniciando cambios de volumen aleatorio (Ctrl+C para detener)")
-print("Rango: 15% - 100% | Intervalos: 1 - 30 segundos\n")
+print("Starting random volume changes (Ctrl+C to stop)")
+print("Range: 15% - 100% | Intervals: 1 - 30 seconds\n")
 
 try:
     while True:
@@ -14,10 +14,8 @@ try:
         wait = random.uniform(1, 15)
 
         volume.SetMasterVolumeLevelScalar(level / 100.0, None)
-        print(f"Volumen -> {level:3d}% | próximo cambio en {wait:.1f}s")
+        print(f"Volume -> {level:3d}% | next change in {wait:.1f}s")
 
         time.sleep(wait)
 except KeyboardInterrupt:
-    print("\nDetenido.")
-
-
+    print("\nStopped.")

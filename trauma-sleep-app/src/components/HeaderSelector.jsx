@@ -1,10 +1,11 @@
 import { HEADERS } from '../lib/prompts';
+import { t } from '../lib/i18n';
 
-export default function HeaderSelector({ selected, onSelect }) {
+export default function HeaderSelector({ selected, onSelect, lang = 'en' }) {
   return (
     <div className="w-full">
       <p className="text-sm font-medium text-slate-400 mb-3">
-        Que necesitas ahora
+        {t(lang, 'headerQuestion')}
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {HEADERS.map((h) => (
@@ -20,8 +21,8 @@ export default function HeaderSelector({ selected, onSelect }) {
             `}
           >
             <span className="text-2xl">{h.icon}</span>
-            <span className="text-xs font-semibold leading-tight">{h.label}</span>
-            <span className="text-xs text-slate-500 leading-tight hidden sm:block">{h.description}</span>
+            <span className="text-xs font-semibold leading-tight">{t(lang, `header.${h.id}.label`)}</span>
+            <span className="text-xs text-slate-500 leading-tight hidden sm:block">{t(lang, `header.${h.id}.description`)}</span>
           </button>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { t } from '../lib/i18n';
 
 function formatTime(s) {
   if (!isFinite(s) || isNaN(s)) return '0:00';
@@ -7,7 +8,7 @@ function formatTime(s) {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 }
 
-export default function PlaylistPlayer({ entries, onClose, onRemove }) {
+export default function PlaylistPlayer({ entries, onClose, onRemove, lang = 'en' }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [loop, setLoop] = useState(false);
@@ -16,6 +17,11 @@ export default function PlaylistPlayer({ entries, onClose, onRemove }) {
   const audioRef = useRef(null);
 
   const track = entries[currentIdx];
+
+  function trackLabel(entry) {
+    if (entry.headerId) return t(lang, `header.${entry.headerId}.label`);
+    return entry.label ?? '';
+  }
 
   useEffect(() => {
     setCurrent(0);
@@ -85,13 +91,13 @@ export default function PlaylistPlayer({ entries, onClose, onRemove }) {
 
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-800">
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-widest mb-0.5">Playlist</p>
-            <p className="text-sm font-semibold text-slate-200">{entries.length} audios</p>
+            <p className="text-xs text-slate-500 uppercase tracking-widest mb-0.5">{t(lang, 'playlistTitle')}</p>
+            <p className="text-sm font-semibold text-slate-200">{t(lang, 'tracks', entries.length)}</p>
           </div>
           <div className="flex gap-2">
             <button
               onClick={downloadAll}
-              title="Descargar todos"
+              title={t(lang, 'downloadAll')}
               className="p-2 rounded-xl text-slate-500 hover:text-indigo-400 hover:bg-slate-800 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,12 +119,12 @@ export default function PlaylistPlayer({ entries, onClose, onRemove }) {
           <div className="flex items-center gap-3">
             <span className="text-2xl">{track.icon}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{track.label}</p>
+              <p className="text-sm font-semibold text-white truncate">{trackLabel(track)}</p>
               <p className="text-xs text-slate-500">{currentIdx + 1} / {entries.length}</p>
             </div>
             <button
               onClick={downloadCurrent}
-              title="Descargar este audio"
+              title={t(lang, 'downloadTrack')}
               className="p-1.5 rounded-lg text-slate-600 hover:text-indigo-400 transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,7 +198,7 @@ export default function PlaylistPlayer({ entries, onClose, onRemove }) {
 
             <button
               onClick={() => setLoop(!loop)}
-              title={loop ? 'Loop activado' : 'Loop desactivado'}
+              title={loop ? t(lang, 'loopOn') : t(lang, 'loopOff')}
               className={`p-2 rounded-full transition-colors ${loop ? 'text-indigo-400 bg-indigo-900/40' : 'text-slate-600 hover:text-slate-300'}`}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +223,7 @@ export default function PlaylistPlayer({ entries, onClose, onRemove }) {
                 }`}
               >
                 <span className="text-base">{e.icon}</span>
-                <span className="text-xs flex-1 truncate">{e.label}</span>
+                <span className="text-xs flex-1 truncate">{trackLabel(e)}</span>
                 {i === currentIdx && playing && (
                   <span className="flex gap-0.5 shrink-0">
                     {[0, 1, 2].map((b) => (
@@ -233,7 +239,7 @@ export default function PlaylistPlayer({ entries, onClose, onRemove }) {
                     else if (i === currentIdx && i === entries.length - 1) setCurrentIdx(Math.max(0, i - 1));
                     onRemove(e.id);
                   }}
-                  title="Quitar de playlist"
+                  title={t(lang, 'removeFromPlaylist')}
                   className="px-3 py-3 text-slate-600 hover:text-red-400 transition-colors shrink-0"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

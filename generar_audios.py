@@ -1,10 +1,10 @@
 """
-Genera los 5 audios terapéuticos con voz Juniper y acento argentino
-usando la API de OpenAI TTS (modelo gpt-4o-mini-tts).
+Generate five therapeutic MP3s with an Argentine Rioplatense-style voice via
+OpenAI Chat Completions (audio output, e.g. gpt-audio-mini).
 
-Requiere: pip install openai
-Uso:      python generar_audios.py
-          (Pone tu OPENAI_API_KEY en variable de entorno o en el .env)
+Requires: pip install openai python-dotenv
+Usage:    python generar_audios.py
+          Set OPENAI_API_KEY in the environment or in a local .env file (never commit it).
 """
 
 import os
@@ -17,7 +17,7 @@ load_dotenv()
 
 API_KEY = os.getenv("OPENAI_API_KEY", "")
 if not API_KEY:
-    print("ERROR: No se encontró OPENAI_API_KEY. Agregala al archivo .env o como variable de entorno.")
+    print("ERROR: OPENAI_API_KEY not found. Add it to .env or your environment.")
     sys.exit(1)
 
 client = OpenAI(api_key=API_KEY)
@@ -25,7 +25,7 @@ client = OpenAI(api_key=API_KEY)
 OUTPUT_DIR = Path("audios")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-SISTEMA = (
+SYSTEM_PROMPT = (
     "Sos una voz terapéutica con acento rioplatense argentino auténtico. "
     "Usás 'vos' en lugar de 'tú'. "
     "Tu tono es suave, pausado y cálido, como si acompañaras a alguien en un momento muy difícil. "
@@ -35,9 +35,9 @@ SISTEMA = (
 
 AUDIOS = [
     {
-        "nombre": "01_ancla_seguridad_nocturna.mp3",
-        "titulo": "Audio 1 — Ancla de seguridad nocturna",
-        "texto": """Ahora estoy acá.
+        "file": "01_ancla_seguridad_nocturna.mp3",
+        "title": "Audio 1 — Ancla de seguridad nocturna",
+        "script": """Ahora estoy acá.
 Estoy en mi cama.
 Este momento no es aquel momento.
 Lo que viví fue real y me golpeó fuerte, pero ahora mismo estoy acá, respirando.
@@ -55,9 +55,9 @@ Un minuto. Después otro.
 Estoy a salvo en este instante.""",
     },
     {
-        "nombre": "02_anti_dano_anti_gaslighting.mp3",
-        "titulo": "Audio 2 — Anti-daño / anti-gaslighting",
-        "texto": """Las frases que me metieron no son mi identidad.
+        "file": "02_anti_dano_anti_gaslighting.mp3",
+        "title": "Audio 2 — Anti-daño / anti-gaslighting",
+        "script": """Las frases que me metieron no son mi identidad.
 Que me hayan atacado no define mi valor.
 Que me hayan humillado no define mi capacidad.
 Que me hayan querido quebrar no prueba que yo esté roto.
@@ -76,9 +76,9 @@ Hoy no necesito sentirme perfecto.
 Solo necesito seguir acá.""",
     },
     {
-        "nombre": "03_para_estudiar_funcionar.mp3",
-        "titulo": "Audio 3 — Para estudiar / funcionar",
-        "texto": """No tengo que esperar a sentirme bien para empezar.
+        "file": "03_para_estudiar_funcionar.mp3",
+        "title": "Audio 3 — Para estudiar / funcionar",
+        "script": """No tengo que esperar a sentirme bien para empezar.
 Puedo empezar roto, cansado, enojado o vacío.
 Diez minutos cuentan.
 Una sola tarea cuenta.
@@ -95,9 +95,9 @@ Lo mínimo útil ya es progreso.
 Estoy reconstruyendo función, no buscando perfección.""",
     },
     {
-        "nombre": "04_terror_nocturno.mp3",
-        "titulo": "Audio 4 — Si te despertás con terror o imágenes",
-        "texto": """Pará.
+        "file": "04_terror_nocturno.mp3",
+        "title": "Audio 4 — Si te despertás con terror o imágenes",
+        "script": """Pará.
 Esto es activación.
 No es una sentencia.
 Mirá alrededor.
@@ -113,9 +113,9 @@ No hace falta pelear con la sensación.
 Solo dejar que baje.""",
     },
     {
-        "nombre": "05_kyoto_shinsengumi.mp3",
-        "titulo": "Audio 5 — Kyoto / Tokugawa / Shinsengumi",
-        "texto": """Cerrás los ojos y no estás escapando: estás cruzando un umbral.
+        "file": "05_kyoto_shinsengumi.mp3",
+        "title": "Audio 5 — Kyoto / Tokugawa / Shinsengumi",
+        "script": """Cerrás los ojos y no estás escapando: estás cruzando un umbral.
 La noche está fresca. El aire huele a madera vieja, piedra húmeda y flores de cerezo.
 Estás en Kyoto.
 No en la Kyoto apurada del turista, sino en una Kyoto más silenciosa, donde la historia todavía respira entre faroles y callecitas estrechas.
@@ -166,34 +166,34 @@ Y florecen igual.""",
 ]
 
 
-def generar_audio(audio: dict) -> None:
+def generate_track(track: dict) -> None:
     import base64
 
-    destino = OUTPUT_DIR / audio["nombre"]
-    if destino.exists():
-        print(f"  [skip] {audio['nombre']} ya existe.")
+    out_path = OUTPUT_DIR / track["file"]
+    if out_path.exists():
+        print(f"  [skip] {track['file']} already exists.")
         return
 
-    print(f"  Generando: {audio['titulo']} ...", end=" ", flush=True)
+    print(f"  Generating: {track['title']} ...", end=" ", flush=True)
     response = client.chat.completions.create(
         model="gpt-audio-mini",
         modalities=["text", "audio"],
         audio={"voice": "nova", "format": "mp3"},
         messages=[
-            {"role": "system", "content": SISTEMA},
-            {"role": "user", "content": audio["texto"]},
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": track["script"]},
         ],
     )
     audio_data = response.choices[0].message.audio.data
-    destino.write_bytes(base64.b64decode(audio_data))
-    print(f"OK -> {destino}")
+    out_path.write_bytes(base64.b64decode(audio_data))
+    print(f"OK -> {out_path}")
 
 
 def main() -> None:
-    print(f"\nGenerando {len(AUDIOS)} audios en carpeta '{OUTPUT_DIR}/'...\n")
-    for audio in AUDIOS:
-        generar_audio(audio)
-    print("\nListo. Todos los archivos están en la carpeta 'audios/'.")
+    print(f"\nGenerating {len(AUDIOS)} tracks into '{OUTPUT_DIR}/'...\n")
+    for track in AUDIOS:
+        generate_track(track)
+    print("\nDone. All files are in the 'audios/' folder.")
 
 
 if __name__ == "__main__":

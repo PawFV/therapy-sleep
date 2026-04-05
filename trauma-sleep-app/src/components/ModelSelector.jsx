@@ -1,4 +1,5 @@
 import { TEXT_MODEL_OPTIONS, AUDIO_MODEL_OPTIONS, IMAGE_MODEL_OPTIONS, MODEL_TEXT, MODEL_AUDIO, MODEL_IMAGE } from "../lib/openai";
+import { t } from "../lib/i18n";
 
 function ChevronDown() {
   return (
@@ -8,7 +9,7 @@ function ChevronDown() {
   );
 }
 
-function ModelSelect({ label, value, options, defaultId, onChange }) {
+function ModelSelect({ label, value, options, defaultId, onChange, lang }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
@@ -18,7 +19,7 @@ function ModelSelect({ label, value, options, defaultId, onChange }) {
             onClick={() => onChange(defaultId)}
             className="text-xs text-slate-600 hover:text-indigo-400 transition-colors"
           >
-            Restablecer
+            {t(lang, 'modelReset')}
           </button>
         )}
       </div>
@@ -30,7 +31,7 @@ function ModelSelect({ label, value, options, defaultId, onChange }) {
         >
           {options.map((o) => (
             <option key={o.id} value={o.id}>
-              {o.label}
+              {t(lang, `model.${o.id}`) !== `model.${o.id}` ? t(lang, `model.${o.id}`) : o.label}
             </option>
           ))}
         </select>
@@ -40,33 +41,36 @@ function ModelSelect({ label, value, options, defaultId, onChange }) {
   );
 }
 
-export default function ModelSelector({ textModel, audioModel, imageModel, onChange }) {
+export default function ModelSelector({ textModel, audioModel, imageModel, onChange, lang = 'en' }) {
   return (
     <div className="w-full max-w-xl mx-auto space-y-3">
       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-        Modelos
+        {t(lang, 'modelsTitle')}
       </p>
       <div className="grid gap-3 sm:grid-cols-3">
         <ModelSelect
-          label="Guion (texto)"
+          label={t(lang, 'modelScript')}
           value={textModel}
           options={TEXT_MODEL_OPTIONS}
           defaultId={MODEL_TEXT}
           onChange={(v) => onChange({ textModel: v })}
+          lang={lang}
         />
         <ModelSelect
-          label="Voz (audio)"
+          label={t(lang, 'modelVoice')}
           value={audioModel}
           options={AUDIO_MODEL_OPTIONS}
           defaultId={MODEL_AUDIO}
           onChange={(v) => onChange({ audioModel: v })}
+          lang={lang}
         />
         <ModelSelect
-          label="Imagen"
+          label={t(lang, 'modelImage')}
           value={imageModel ?? MODEL_IMAGE}
           options={IMAGE_MODEL_OPTIONS}
           defaultId={MODEL_IMAGE}
           onChange={(v) => onChange({ imageModel: v })}
+          lang={lang}
         />
       </div>
     </div>

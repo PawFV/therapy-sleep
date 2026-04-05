@@ -7,22 +7,22 @@ export const MODEL_AUDIO = 'gpt-audio-mini';
 export const MODEL_IMAGE = 'gpt-image-1-mini';
 
 export const TEXT_MODEL_OPTIONS = [
-  { id: 'gpt-4o-mini',  label: 'gpt-4o-mini — rapido, economico (recomendado)' },
-  { id: 'gpt-4o',       label: 'gpt-4o — mayor calidad de guion' },
+  { id: 'gpt-4o-mini',  label: 'gpt-4o-mini — fast, economical (recommended)' },
+  { id: 'gpt-4o',       label: 'gpt-4o — higher script quality' },
 ];
 
 export const AUDIO_MODEL_OPTIONS = [
-  { id: 'gpt-audio-mini',  label: 'gpt-audio-mini — economico, rapido (recomendado)' },
-  { id: 'gpt-audio',       label: 'gpt-audio — mejor calidad de voz' },
-  { id: 'gpt-audio-1.5',   label: 'gpt-audio-1.5 — mejor voz disponible' },
-  { id: 'gpt-4o-audio-preview',      label: 'gpt-4o-audio-preview — GPT-4o con audio' },
-  { id: 'gpt-4o-mini-audio-preview', label: 'gpt-4o-mini-audio-preview — GPT-4o mini con audio' },
+  { id: 'gpt-audio-mini',  label: 'gpt-audio-mini — economical, fast (recommended)' },
+  { id: 'gpt-audio',       label: 'gpt-audio — better voice quality' },
+  { id: 'gpt-audio-1.5',   label: 'gpt-audio-1.5 — best available voice' },
+  { id: 'gpt-4o-audio-preview',      label: 'gpt-4o-audio-preview — GPT-4o with audio' },
+  { id: 'gpt-4o-mini-audio-preview', label: 'gpt-4o-mini-audio-preview — GPT-4o mini with audio' },
 ];
 
 export const IMAGE_MODEL_OPTIONS = [
-  { id: 'gpt-image-1-mini', label: 'gpt-image-1-mini — economico, rapido (recomendado)' },
-  { id: 'gpt-image-1',      label: 'gpt-image-1 — mejor calidad' },
-  { id: 'gpt-image-1.5',    label: 'gpt-image-1.5 — estado del arte' },
+  { id: 'gpt-image-1-mini', label: 'gpt-image-1-mini — economical, fast (recommended)' },
+  { id: 'gpt-image-1',      label: 'gpt-image-1 — higher quality' },
+  { id: 'gpt-image-1.5',    label: 'gpt-image-1.5 — state of the art' },
 ];
 
 const AVAILABLE_VOICES = ['nova', 'shimmer', 'coral', 'sage', 'alloy', 'echo', 'fable', 'onyx', 'ash', 'ballad', 'verse', 'marin', 'cedar'];
@@ -50,7 +50,7 @@ async function synthesizeOneChunk({ apiKey, text, voice, model = MODEL_AUDIO }) 
   });
 
   const audioData = response.choices[0].message.audio?.data;
-  if (!audioData) throw new Error('La API no devolvió datos de audio.');
+  if (!audioData) throw new Error('The API returned no audio data.');
 
   const binary = atob(audioData);
   const bytes = new Uint8Array(binary.length);
@@ -81,7 +81,7 @@ export async function generateText({ apiKey, systemPrompt, userPrompt, maxTokens
 
 export async function generateAudio({ apiKey, text, voice = 'nova', audioModel = MODEL_AUDIO, onChunk }) {
   const chunks = splitTextForSpeech(text);
-  if (chunks.length === 0) throw new Error('El texto está vacío.');
+  if (chunks.length === 0) throw new Error('Text is empty.');
 
   const arrays = [];
   for (let i = 0; i < chunks.length; i++) {
@@ -125,7 +125,7 @@ export async function generateFull({ apiKey, header, params, context, onProgress
     model: params.textModel || MODEL_TEXT,
   });
 
-  const { blob, url, chunkCount } = await generateAudio({
+  const { blob, url, chunkCount, audioB64 } = await generateAudio({
     apiKey,
     text,
     voice: params.voice || 'nova',
@@ -133,7 +133,7 @@ export async function generateFull({ apiKey, header, params, context, onProgress
     onChunk: (current, total) => onProgress?.('audio', { current, total }),
   });
 
-  return { text, blob, url, usage, chunkCount };
+  return { text, blob, url, audioB64, usage, chunkCount };
 }
 
 export async function generateVoicePreview({ apiKey, voice, audioModel = MODEL_AUDIO }) {
@@ -167,7 +167,7 @@ Sin texto, sin palabras, sin letras en la imagen. Atmósfera de calma, seguridad
   });
 
   const b64 = result.data[0].b64_json;
-  if (!b64) throw new Error('La API no devolvió imagen.');
+  if (!b64) throw new Error('The API returned no image.');
   return `data:image/png;base64,${b64}`;
 }
 

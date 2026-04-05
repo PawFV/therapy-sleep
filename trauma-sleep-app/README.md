@@ -1,16 +1,35 @@
-# React + Vite
+# trauma-sleep-app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend de **trauma-sleep**: React 19, Vite 8, Tailwind CSS 4, Vitest.
 
-Currently, two official plugins are available:
+La descripción del producto, objetivos, beneficios y avisos está en el [README del repositorio](../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Scripts
 
-## React Compiler
+| Comando | Descripción |
+|---------|-------------|
+| `pnpm dev` | Servidor de desarrollo (HMR) |
+| `pnpm build` | Build de producción en `dist/` |
+| `pnpm preview` | Vista previa del build |
+| `pnpm test` | Tests unitarios (Vitest, jsdom) |
+| `pnpm test:watch` | Tests en modo watch |
+| `pnpm lint` | ESLint |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Instalación
 
-## Expanding the ESLint configuration
+```bash
+pnpm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Stack
+
+- **openai** — cliente en el navegador (`dangerouslyAllowBrowser: true`; la key es tuya y no pasa por un backend del proyecto).
+- **React** — UI con elementos `<audio>` nativos para reproducción.
+
+## Tests
+
+Los tests cubren utilidades (`storage`, `prompts`, `audioChunks`, previews de voz). Ejecutá `pnpm test` antes de abrir un PR.
+
+## Variables de entorno
+
+La app **no** requiere `.env` para desarrollo: la API key se ingresa en la UI. Para despliegues propios, no expongas claves en el bundle; este diseño asume uso personal con key en el cliente.

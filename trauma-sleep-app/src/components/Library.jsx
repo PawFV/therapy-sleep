@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import AudioPlayer from './AudioPlayer';
+import { t } from '../lib/i18n';
 
-export default function Library({ entries, playlist, onDelete, onClear, onAddToPlaylist, onRemoveFromPlaylist }) {
+export default function Library({ entries, playlist, onDelete, onClear, onAddToPlaylist, onRemoveFromPlaylist, lang = 'en' }) {
   const [expanded, setExpanded] = useState(null);
 
   if (entries.length === 0) {
     return (
       <div className="text-center py-10 text-slate-600 text-sm">
-        Los audios que generes aparecen aca. Se guardan en tu navegador.
+        {t(lang, 'libraryEmpty')}
       </div>
     );
   }
@@ -29,19 +30,25 @@ export default function Library({ entries, playlist, onDelete, onClear, onAddToP
     }
   }
 
+  function entryLabel(entry) {
+    if (entry.headerId) return t(lang, `header.${entry.headerId}.label`);
+    return entry.label ?? '';
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <p className="text-sm font-medium text-slate-400">
-          {entries.length} audio{entries.length !== 1 ? 's' : ''} guardado{entries.length !== 1 ? 's' : ''}
+          {t(lang, 'savedTracks', entries.length)}
         </p>
         <button onClick={onClear} className="text-xs text-slate-600 hover:text-red-400 transition-colors">
-          Borrar todo
+          {t(lang, 'clearAll')}
         </button>
       </div>
 
       {entries.map((entry) => {
         const inPlaylist = playlistIds.has(entry.id);
+        const label = entryLabel(entry);
         return (
           <div
             key={entry.id}
@@ -54,7 +61,7 @@ export default function Library({ entries, playlist, onDelete, onClear, onAddToP
               >
                 <span className="text-xl">{entry.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-200 truncate">{entry.label}</p>
+                  <p className="text-sm font-medium text-slate-200 truncate">{label}</p>
                   <p className="text-xs text-slate-600">{entry.date}</p>
                 </div>
                 <svg
@@ -67,7 +74,7 @@ export default function Library({ entries, playlist, onDelete, onClear, onAddToP
 
               <button
                 onClick={() => togglePlaylist(entry)}
-                title={inPlaylist ? 'Quitar de playlist' : 'Agregar a playlist'}
+                title={inPlaylist ? t(lang, 'removeFromPlaylistIcon') : t(lang, 'addToPlaylistIcon')}
                 className={`shrink-0 p-2 rounded-xl transition-colors ${
                   inPlaylist
                     ? 'text-indigo-400 bg-indigo-900/40 hover:bg-indigo-900/60'
@@ -88,15 +95,16 @@ export default function Library({ entries, playlist, onDelete, onClear, onAddToP
               <div className="px-4 pb-4">
                 <AudioPlayer
                   url={entry.url}
-                  title={entry.label}
+                  title={label}
                   text={entry.text}
                   onDownload={() => downloadEntry(entry)}
+                  lang={lang}
                 />
                 <button
                   onClick={() => onDelete(entry.id)}
                   className="mt-3 text-xs text-slate-600 hover:text-red-400 transition-colors"
                 >
-                  Eliminar este audio
+                  {t(lang, 'deleteTrack')}
                 </button>
               </div>
             )}

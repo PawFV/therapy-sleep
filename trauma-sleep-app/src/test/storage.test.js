@@ -48,7 +48,7 @@ describe('Library (localStorage)', () => {
     id,
     label: 'Test',
     icon: '🌙',
-    text: 'Texto de prueba',
+    text: 'Sample transcript',
     url: 'blob:test',
     date: '01/01/25 00:00',
   });
