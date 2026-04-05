@@ -1,4 +1,4 @@
-import { TEXT_MODEL_OPTIONS, AUDIO_MODEL_OPTIONS, MODEL_TEXT, MODEL_AUDIO } from "../lib/openai";
+import { TEXT_MODEL_OPTIONS, AUDIO_MODEL_OPTIONS, IMAGE_MODEL_OPTIONS, MODEL_TEXT, MODEL_AUDIO, MODEL_IMAGE } from "../lib/openai";
 
 function ChevronDown() {
   return (
@@ -40,13 +40,13 @@ function ModelSelect({ label, value, options, defaultId, onChange }) {
   );
 }
 
-export default function ModelSelector({ textModel, audioModel, onChange }) {
+export default function ModelSelector({ textModel, audioModel, imageModel, onChange }) {
   return (
     <div className="w-full max-w-xl mx-auto space-y-3">
       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
         Modelos
       </p>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-3">
         <ModelSelect
           label="Guion (texto)"
           value={textModel}
@@ -60,6 +60,13 @@ export default function ModelSelector({ textModel, audioModel, onChange }) {
           options={AUDIO_MODEL_OPTIONS}
           defaultId={MODEL_AUDIO}
           onChange={(v) => onChange({ audioModel: v })}
+        />
+        <ModelSelect
+          label="Imagen"
+          value={imageModel ?? MODEL_IMAGE}
+          options={IMAGE_MODEL_OPTIONS}
+          defaultId={MODEL_IMAGE}
+          onChange={(v) => onChange({ imageModel: v })}
         />
       </div>
     </div>

@@ -4,6 +4,7 @@ import { splitTextForSpeech } from './audioChunks';
 
 export const MODEL_TEXT = 'gpt-4o-mini';
 export const MODEL_AUDIO = 'gpt-audio-mini';
+export const MODEL_IMAGE = 'gpt-image-1-mini';
 
 export const TEXT_MODEL_OPTIONS = [
   { id: 'gpt-4o-mini',  label: 'gpt-4o-mini — rapido, economico (recomendado)' },
@@ -16,6 +17,12 @@ export const AUDIO_MODEL_OPTIONS = [
   { id: 'gpt-audio-1.5',   label: 'gpt-audio-1.5 — mejor voz disponible' },
   { id: 'gpt-4o-audio-preview',      label: 'gpt-4o-audio-preview — GPT-4o con audio' },
   { id: 'gpt-4o-mini-audio-preview', label: 'gpt-4o-mini-audio-preview — GPT-4o mini con audio' },
+];
+
+export const IMAGE_MODEL_OPTIONS = [
+  { id: 'gpt-image-1-mini', label: 'gpt-image-1-mini — economico, rapido (recomendado)' },
+  { id: 'gpt-image-1',      label: 'gpt-image-1 — mejor calidad' },
+  { id: 'gpt-image-1.5',    label: 'gpt-image-1.5 — estado del arte' },
 ];
 
 const AVAILABLE_VOICES = ['nova', 'shimmer', 'coral', 'sage', 'alloy', 'echo', 'fable', 'onyx', 'ash', 'ballad', 'verse', 'marin', 'cedar'];
@@ -137,6 +144,31 @@ export async function generateVoicePreview({ apiKey, voice, audioModel = MODEL_A
     audioModel,
   });
   return url;
+}
+
+export async function generateImage({ apiKey, header, context, imageModel = MODEL_IMAGE }) {
+  const client = createClient(apiKey);
+
+  const contextLine = context?.trim()
+    ? `Contexto personal del usuario: "${context.trim()}".`
+    : '';
+
+  const prompt = `Ilustración terapéutica, estilo onírico suave y sereno, paleta de colores fríos y cálidos en armonía. 
+Tema: "${header.label}" — ${header.description ?? header.label}. 
+${contextLine}
+Sin texto, sin palabras, sin letras en la imagen. Atmósfera de calma, seguridad y sanación interior.`.trim();
+
+  const result = await client.images.generate({
+    model: imageModel,
+    prompt,
+    size: '1024x1024',
+    quality: 'medium',
+    n: 1,
+  });
+
+  const b64 = result.data[0].b64_json;
+  if (!b64) throw new Error('La API no devolvió imagen.');
+  return `data:image/png;base64,${b64}`;
 }
 
 export async function validateApiKey(apiKey) {
