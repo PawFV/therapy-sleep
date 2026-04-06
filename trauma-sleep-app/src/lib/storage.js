@@ -58,10 +58,17 @@ export function clearLibrary() {
   localStorage.removeItem(LIBRARY_KEY);
 }
 
+const VALID_TEXT_MODELS = new Set(['gpt-4o-mini', 'gpt-4o']);
+
 export function loadModelPrefs() {
   try {
     const raw = localStorage.getItem(MODEL_PREFS_KEY);
-    return raw ? JSON.parse(raw) : {};
+    const prefs = raw ? JSON.parse(raw) : {};
+    if (prefs.textModel && !VALID_TEXT_MODELS.has(prefs.textModel)) {
+      delete prefs.textModel;
+      localStorage.setItem(MODEL_PREFS_KEY, JSON.stringify(prefs));
+    }
+    return prefs;
   } catch {
     return {};
   }

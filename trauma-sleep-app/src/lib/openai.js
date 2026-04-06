@@ -6,11 +6,8 @@ export const MODEL_AUDIO = "gpt-audio-mini";
 export const MODEL_IMAGE = "gpt-image-1-mini";
 
 export const TEXT_MODEL_OPTIONS = [
-  {
-    id: "gpt-5.4-long-context",
-    label: "gpt-5.4-long-context — very long context",
-  },
-  { id: "gpt-5.4-pro", label: "gpt-5.4-pro — highest capability" },
+  {id: "gpt-5.4", label: "gpt-5.4 — highest capability"},
+
   {
     id: "gpt-4o-mini",
     label: "gpt-4o-mini — fast, economical (recommended)",
