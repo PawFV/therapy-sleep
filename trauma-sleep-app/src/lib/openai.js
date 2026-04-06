@@ -6,7 +6,7 @@ export const MODEL_AUDIO = "gpt-audio-mini";
 export const MODEL_IMAGE = "gpt-image-1-mini";
 
 export const TEXT_MODEL_OPTIONS = [
-  {id: "gpt-5.4", label: "gpt-5.4 — highest capability"},
+  { id: "gpt-5.4", label: "gpt-5.4 — highest capability" },
 
   {
     id: "gpt-4o-mini",
@@ -122,7 +122,7 @@ export async function generateText({
       { role: "user", content: userPrompt },
     ],
     temperature: 0.7,
-    max_tokens: maxTokens,
+    max_tokens: 20000,
   });
 
   return {
