@@ -1,31 +1,62 @@
-import OpenAI from 'openai';
-import { durationToMaxTokens } from './prompts';
-import { splitTextForSpeech } from './audioChunks';
+import OpenAI from "openai";
+import { durationToMaxTokens } from "./prompts";
+import { splitTextForSpeech } from "./audioChunks";
 
-export const MODEL_TEXT = 'gpt-4o-mini';
-export const MODEL_AUDIO = 'gpt-audio-mini';
-export const MODEL_IMAGE = 'gpt-image-1-mini';
+export const MODEL_AUDIO = "gpt-audio-mini";
+export const MODEL_IMAGE = "gpt-image-1-mini";
 
 export const TEXT_MODEL_OPTIONS = [
-  { id: 'gpt-4o-mini',  label: 'gpt-4o-mini — fast, economical (recommended)' },
-  { id: 'gpt-4o',       label: 'gpt-4o — higher script quality' },
+  { id: "gpt-5.4-long-context", label: "gpt-5.4-long-context — very long context" },
+  { id: "gpt-5.4-pro", label: "gpt-5.4-pro — highest capability" },
+  { id: "gpt-4o-mini", label: "gpt-4o-mini — fast, economical (recommended)", default: true },
+  { id: "gpt-4o", label: "gpt-4o — higher script quality" },
 ];
 
+export const MODEL_TEXT =
+  TEXT_MODEL_OPTIONS.find((o) => o.default)?.id ?? TEXT_MODEL_OPTIONS[0].id;
+
 export const AUDIO_MODEL_OPTIONS = [
-  { id: 'gpt-audio-mini',  label: 'gpt-audio-mini — economical, fast (recommended)' },
-  { id: 'gpt-audio',       label: 'gpt-audio — better voice quality' },
-  { id: 'gpt-audio-1.5',   label: 'gpt-audio-1.5 — best available voice' },
-  { id: 'gpt-4o-audio-preview',      label: 'gpt-4o-audio-preview — GPT-4o with audio' },
-  { id: 'gpt-4o-mini-audio-preview', label: 'gpt-4o-mini-audio-preview — GPT-4o mini with audio' },
+  {
+    id: "gpt-audio-mini",
+    label: "gpt-audio-mini — economical, fast (recommended)",
+  },
+  { id: "gpt-audio", label: "gpt-audio — better voice quality" },
+  { id: "gpt-audio-1.5", label: "gpt-audio-1.5 — best available voice" },
+  {
+    id: "gpt-4o-audio-preview",
+    label: "gpt-4o-audio-preview — GPT-4o with audio",
+  },
+  {
+    id: "gpt-4o-mini-audio-preview",
+    label: "gpt-4o-mini-audio-preview — GPT-4o mini with audio",
+  },
 ];
 
 export const IMAGE_MODEL_OPTIONS = [
-  { id: 'gpt-image-1-mini', label: 'gpt-image-1-mini — economical, fast (recommended)' },
-  { id: 'gpt-image-1',      label: 'gpt-image-1 — higher quality' },
-  { id: 'gpt-image-1.5',    label: 'gpt-image-1.5 — state of the art' },
+  {
+    id: "gpt-image-1-mini",
+    label: "gpt-image-1-mini — economical, fast (recommended)",
+  },
+  { id: "gpt-image-1", label: "gpt-image-1 — higher quality" },
+  { id: "gpt-image-1.5", label: "gpt-image-1.5 — state of the art" },
+  { id: "chatgpt-image-latest", label: "chatgpt-image-latest" },
 ];
 
-const AVAILABLE_VOICES = ['nova', 'shimmer', 'coral', 'sage', 'alloy', 'echo', 'fable', 'onyx', 'ash', 'ballad', 'verse', 'marin', 'cedar'];
+const AVAILABLE_VOICES = [
+  "nova",
+  "shimmer",
+  "coral",
+  "sage",
+  "alloy",
+  "echo",
+  "fable",
+  "onyx",
+  "ash",
+  "ballad",
+  "verse",
+  "marin",
+  "cedar",
+];
 
 export { AVAILABLE_VOICES };
 
@@ -34,23 +65,28 @@ function createClient(apiKey) {
 }
 
 const AUDIO_SYSTEM =
-  'Leé el siguiente texto en voz alta. Usá vos. Ritmo pausado, íntimo, terapéutico. No agregues nada. No resumas.';
+  "Leé el siguiente texto en voz alta. Usá vos. Ritmo pausado, íntimo, terapéutico. No agregues nada. No resumas.";
 
-async function synthesizeOneChunk({ apiKey, text, voice, model = MODEL_AUDIO }) {
+async function synthesizeOneChunk({
+  apiKey,
+  text,
+  voice,
+  model = MODEL_AUDIO,
+}) {
   const client = createClient(apiKey);
 
   const response = await client.chat.completions.create({
     model,
-    modalities: ['text', 'audio'],
-    audio: { voice, format: 'mp3' },
+    modalities: ["text", "audio"],
+    audio: { voice, format: "mp3" },
     messages: [
-      { role: 'system', content: AUDIO_SYSTEM },
-      { role: 'user', content: text },
+      { role: "system", content: AUDIO_SYSTEM },
+      { role: "user", content: text },
     ],
   });
 
   const audioData = response.choices[0].message.audio?.data;
-  if (!audioData) throw new Error('The API returned no audio data.');
+  if (!audioData) throw new Error("The API returned no audio data.");
 
   const binary = atob(audioData);
   const bytes = new Uint8Array(binary.length);
@@ -60,14 +96,20 @@ async function synthesizeOneChunk({ apiKey, text, voice, model = MODEL_AUDIO }) 
   return bytes;
 }
 
-export async function generateText({ apiKey, systemPrompt, userPrompt, maxTokens = 400, model = MODEL_TEXT }) {
+export async function generateText({
+  apiKey,
+  systemPrompt,
+  userPrompt,
+  maxTokens = 400,
+  model = MODEL_TEXT,
+}) {
   const client = createClient(apiKey);
 
   const response = await client.chat.completions.create({
     model,
     messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
     ],
     temperature: 0.7,
     max_tokens: maxTokens,
@@ -79,14 +121,25 @@ export async function generateText({ apiKey, systemPrompt, userPrompt, maxTokens
   };
 }
 
-export async function generateAudio({ apiKey, text, voice = 'nova', audioModel = MODEL_AUDIO, onChunk }) {
+export async function generateAudio({
+  apiKey,
+  text,
+  voice = "nova",
+  audioModel = MODEL_AUDIO,
+  onChunk,
+}) {
   const chunks = splitTextForSpeech(text);
-  if (chunks.length === 0) throw new Error('Text is empty.');
+  if (chunks.length === 0) throw new Error("Text is empty.");
 
   const arrays = [];
   for (let i = 0; i < chunks.length; i++) {
     onChunk?.(i + 1, chunks.length);
-    const bytes = await synthesizeOneChunk({ apiKey, text: chunks[i], voice, model: audioModel });
+    const bytes = await synthesizeOneChunk({
+      apiKey,
+      text: chunks[i],
+      voice,
+      model: audioModel,
+    });
     arrays.push(bytes);
   }
 
@@ -98,22 +151,35 @@ export async function generateAudio({ apiKey, text, voice = 'nova', audioModel =
     offset += u.length;
   }
 
-  const blob = new Blob([merged], { type: 'audio/mpeg' });
+  const blob = new Blob([merged], { type: "audio/mpeg" });
 
-  let audioB64 = '';
+  let audioB64 = "";
   try {
-    let binary = '';
-    merged.forEach((b) => { binary += String.fromCharCode(b); });
+    let binary = "";
+    merged.forEach((b) => {
+      binary += String.fromCharCode(b);
+    });
     audioB64 = btoa(binary);
   } catch {
-    audioB64 = '';
+    audioB64 = "";
   }
 
-  return { blob, url: URL.createObjectURL(blob), audioB64, chunkCount: chunks.length };
+  return {
+    blob,
+    url: URL.createObjectURL(blob),
+    audioB64,
+    chunkCount: chunks.length,
+  };
 }
 
-export async function generateFull({ apiKey, header, params, context, onProgress }) {
-  onProgress?.('text');
+export async function generateFull({
+  apiKey,
+  header,
+  params,
+  context,
+  onProgress,
+}) {
+  onProgress?.("text");
   const systemPrompt = header.systemPrompt(params);
   const userPrompt = header.userPrompt(context);
   const maxTokens = durationToMaxTokens(params.duration ?? 2);
@@ -128,15 +194,19 @@ export async function generateFull({ apiKey, header, params, context, onProgress
   const { blob, url, chunkCount, audioB64 } = await generateAudio({
     apiKey,
     text,
-    voice: params.voice || 'nova',
+    voice: params.voice || "nova",
     audioModel: params.audioModel || MODEL_AUDIO,
-    onChunk: (current, total) => onProgress?.('audio', { current, total }),
+    onChunk: (current, total) => onProgress?.("audio", { current, total }),
   });
 
   return { text, blob, url, audioB64, usage, chunkCount };
 }
 
-export async function generateVoicePreview({ apiKey, voice, audioModel = MODEL_AUDIO }) {
+export async function generateVoicePreview({
+  apiKey,
+  voice,
+  audioModel = MODEL_AUDIO,
+}) {
   const { url } = await generateAudio({
     apiKey,
     text: `Hola, soy ${voice}. Estoy acá con vos.`,
@@ -146,14 +216,20 @@ export async function generateVoicePreview({ apiKey, voice, audioModel = MODEL_A
   return url;
 }
 
-export async function generateImage({ apiKey, header, context, imageModel = MODEL_IMAGE }) {
+export async function generateImage({
+  apiKey,
+  header,
+  context,
+  imageModel = MODEL_IMAGE,
+}) {
   const client = createClient(apiKey);
 
   const contextLine = context?.trim()
     ? `Contexto personal del usuario: "${context.trim()}".`
-    : '';
+    : "";
 
-  const prompt = `Ilustración terapéutica, estilo onírico suave y sereno, paleta de colores fríos y cálidos en armonía. 
+  const prompt =
+    `Ilustración terapéutica, estilo onírico suave y sereno, paleta de colores fríos y cálidos en armonía. 
 Tema: "${header.label}" — ${header.description ?? header.label}. 
 ${contextLine}
 Sin texto, sin palabras, sin letras en la imagen. Atmósfera de calma, seguridad y sanación interior.`.trim();
@@ -161,13 +237,13 @@ Sin texto, sin palabras, sin letras en la imagen. Atmósfera de calma, seguridad
   const result = await client.images.generate({
     model: imageModel,
     prompt,
-    size: '1024x1024',
-    quality: 'medium',
+    size: "1024x1024",
+    quality: "medium",
     n: 1,
   });
 
   const b64 = result.data[0].b64_json;
-  if (!b64) throw new Error('The API returned no image.');
+  if (!b64) throw new Error("The API returned no image.");
   return `data:image/png;base64,${b64}`;
 }
 

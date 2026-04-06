@@ -27,6 +27,8 @@ const translations = {
     modelReset: 'Reset',
 
     // Model option labels
+    'model.gpt-5.4-long-context': 'gpt-5.4-long-context — very long context',
+    'model.gpt-5.4-pro': 'gpt-5.4-pro — highest capability',
     'model.gpt-4o-mini': 'gpt-4o-mini — fast, economical (recommended)',
     'model.gpt-4o': 'gpt-4o — higher script quality',
     'model.gpt-audio-mini': 'gpt-audio-mini — economical, fast (recommended)',
@@ -150,6 +152,8 @@ const translations = {
     modelImage: 'Imagen',
     modelReset: 'Restablecer',
 
+    'model.gpt-5.4-long-context': 'gpt-5.4-long-context — contexto muy largo',
+    'model.gpt-5.4-pro': 'gpt-5.4-pro — máxima capacidad',
     'model.gpt-4o-mini': 'gpt-4o-mini — rápido, económico (recomendado)',
     'model.gpt-4o': 'gpt-4o — mayor calidad de guion',
     'model.gpt-audio-mini': 'gpt-audio-mini — económico, rápido (recomendado)',
