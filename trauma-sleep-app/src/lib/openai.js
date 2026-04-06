@@ -228,9 +228,13 @@ export async function generateImage({
     ? `Contexto personal del usuario: "${context.trim()}".`
     : "";
 
+  const theme =
+    header.imageTheme ??
+    "Calma, seguridad interior y sanación emocional";
+
   const prompt =
     `Ilustración terapéutica, estilo onírico suave y sereno, paleta de colores fríos y cálidos en armonía. 
-Tema: "${header.label}" — ${header.description ?? header.label}. 
+Tema: ${theme}. 
 ${contextLine}
 Sin texto, sin palabras, sin letras en la imagen. Atmósfera de calma, seguridad y sanación interior.`.trim();
 

@@ -2,14 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { HEADERS } from '../lib/prompts';
 
 describe('HEADERS structure', () => {
-  it('exports 8 headers', () => {
-    expect(HEADERS).toHaveLength(8);
+  it('exports 12 headers', () => {
+    expect(HEADERS).toHaveLength(12);
   });
 
   it('each header has required fields', () => {
     for (const h of HEADERS) {
       expect(h).toHaveProperty('id');
       expect(h).toHaveProperty('icon');
+      expect(h).toHaveProperty('imageTheme');
+      expect(typeof h.imageTheme).toBe('string');
       expect(typeof h.systemPrompt).toBe('function');
       expect(typeof h.userPrompt).toBe('function');
     }
