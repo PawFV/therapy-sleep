@@ -110,7 +110,7 @@ export async function generateText({
   apiKey,
   systemPrompt,
   userPrompt,
-  maxTokens = 20000,
+  maxTokens = 4096,
   model = MODEL_TEXT,
 }) {
   const client = createClient(apiKey);
@@ -122,7 +122,7 @@ export async function generateText({
       { role: "user", content: userPrompt },
     ],
     temperature: 0.7,
-    max_tokens: 20000,
+    max_completion_tokens: maxTokens,
   });
 
   return {
