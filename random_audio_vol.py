@@ -6,7 +6,7 @@ device = AudioUtilities.GetSpeakers()
 volume = device.EndpointVolume
 
 print("Starting random volume changes (Ctrl+C to stop)")
-print("Range: 15% - 100% | Intervals: 1 - 30 seconds\n")
+print("Range: 60% - 100% | Intervals: 1 - 15 seconds\n")
 
 try:
     while True:

@@ -6,14 +6,27 @@ export const MODEL_AUDIO = "gpt-audio-mini";
 export const MODEL_IMAGE = "gpt-image-1-mini";
 
 export const TEXT_MODEL_OPTIONS = [
-  { id: "gpt-5.4-long-context", label: "gpt-5.4-long-context — very long context" },
+  {
+    id: "gpt-5.4-long-context",
+    label: "gpt-5.4-long-context — very long context",
+  },
   { id: "gpt-5.4-pro", label: "gpt-5.4-pro — highest capability" },
-  { id: "gpt-4o-mini", label: "gpt-4o-mini — fast, economical (recommended)", default: true },
+  {
+    id: "gpt-4o-mini",
+    label: "gpt-4o-mini — fast, economical (recommended)",
+    default: true,
+  },
   { id: "gpt-4o", label: "gpt-4o — higher script quality" },
 ];
 
 export const MODEL_TEXT =
   TEXT_MODEL_OPTIONS.find((o) => o.default)?.id ?? TEXT_MODEL_OPTIONS[0].id;
+
+const TEXT_MODEL_IDS = new Set(TEXT_MODEL_OPTIONS.map((o) => o.id));
+
+export function resolveTextModel(id) {
+  return id && TEXT_MODEL_IDS.has(id) ? id : MODEL_TEXT;
+}
 
 export const AUDIO_MODEL_OPTIONS = [
   {
@@ -100,7 +113,7 @@ export async function generateText({
   apiKey,
   systemPrompt,
   userPrompt,
-  maxTokens = 400,
+  maxTokens = 20000,
   model = MODEL_TEXT,
 }) {
   const client = createClient(apiKey);
@@ -188,7 +201,7 @@ export async function generateFull({
     systemPrompt,
     userPrompt,
     maxTokens,
-    model: params.textModel || MODEL_TEXT,
+    model: resolveTextModel(params.textModel),
   });
 
   const { blob, url, chunkCount, audioB64 } = await generateAudio({
@@ -229,8 +242,7 @@ export async function generateImage({
     : "";
 
   const theme =
-    header.imageTheme ??
-    "Calma, seguridad interior y sanación emocional";
+    header.imageTheme ?? "Calma, seguridad interior y sanación emocional";
 
   const prompt =
     `Ilustración terapéutica, estilo onírico suave y sereno, paleta de colores fríos y cálidos en armonía. 

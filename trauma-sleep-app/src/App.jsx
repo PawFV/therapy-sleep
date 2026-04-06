@@ -7,7 +7,7 @@ import Library from './components/Library';
 import PlaylistPlayer from './components/PlaylistPlayer';
 import { generateFull, generateImage } from './lib/openai';
 import ModelSelector from './components/ModelSelector';
-import { MODEL_TEXT, MODEL_AUDIO, MODEL_IMAGE } from './lib/openai';
+import { MODEL_TEXT, MODEL_AUDIO, MODEL_IMAGE, resolveTextModel } from './lib/openai';
 import { loadApiKey, loadLibrary, saveToLibrary, deleteFromLibrary, clearLibrary, loadModelPrefs, saveModelPrefs } from './lib/storage';
 import { t } from './lib/i18n';
 
@@ -27,7 +27,7 @@ function buildInitialParams() {
   const saved = loadModelPrefs();
   return {
     ...DEFAULT_PARAMS,
-    ...(saved.textModel && { textModel: saved.textModel }),
+    textModel: resolveTextModel(saved.textModel),
     ...(saved.audioModel && { audioModel: saved.audioModel }),
     ...(saved.imageModel && { imageModel: saved.imageModel }),
   };
